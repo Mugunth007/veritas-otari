@@ -11,18 +11,20 @@ export default function App() {
   const [currentScenario, setCurrentScenario] = useState(PRESET_SCENARIOS[0]);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   
-  // Credentials strictly loaded from user input or localStorage - NO hardcoded strings
+  // Real credentials loaded strictly from localStorage or environment
   const [elevenLabsApiKey, setElevenLabsApiKey] = useState(() => {
-    return localStorage.getItem('ELEVENLABS_API_KEY') || '';
+    return localStorage.getItem('ELEVENLABS_API_KEY') || import.meta.env.VITE_ELEVENLABS_API_KEY || '';
+  });
+  const [otariApiKey, setOtariApiKey] = useState(() => {
+    return localStorage.getItem('OTARI_API_KEY') || import.meta.env.VITE_OTARI_API_KEY || '';
   });
   const [selectedVoice, setSelectedVoice] = useState('EXAVITQu4vr4xnSDxMaL'); // Sarah (Expressive & Energetic)
-  const [otariEndpoint, setOtariEndpoint] = useState('http://localhost:8000/v1');
+  const [otariEndpoint, setOtariEndpoint] = useState('https://otari.ai/api/v1');
 
   useEffect(() => {
-    if (elevenLabsApiKey) {
-      localStorage.setItem('ELEVENLABS_API_KEY', elevenLabsApiKey);
-    }
-  }, [elevenLabsApiKey]);
+    if (elevenLabsApiKey) localStorage.setItem('ELEVENLABS_API_KEY', elevenLabsApiKey);
+    if (otariApiKey) localStorage.setItem('OTARI_API_KEY', otariApiKey);
+  }, [elevenLabsApiKey, otariApiKey]);
 
   const metrics = calculateFinOpsMetrics(currentScenario);
 
@@ -51,7 +53,7 @@ export default function App() {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs font-mono">
             <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-            <span>Mozilla Otari Hackathon — Devs Wilding Submission</span>
+            <span>Mozilla Otari Hackathon — Real-Time Integration</span>
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
           </div>
 
@@ -60,26 +62,26 @@ export default function App() {
           </h1>
 
           <p className="text-sm sm:text-base text-slate-300/80 leading-relaxed max-w-2xl mx-auto font-sans">
-            Guarding developers against prompt-injection and hallucinated fixes. Routes code across a <strong>3-model consensus triad</strong> (Qwen, Llama, Gemma) and deterministically reproduces bugs in <strong>Otari’s MicroVM Sandbox</strong>.
+            Guarding developers against prompt-injection and hallucinated fixes. Live calls to <strong>Mozilla.ai Otari LLM Gateway</strong> (<code>openai/gpt-oss-120b</code>) and deterministic execution in <strong>Python MicroVM Sandbox</strong>.
           </p>
 
           {/* Quick Stats Banner */}
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2 text-xs font-mono">
             <div className="px-3 py-1.5 rounded-xl bg-[#0E131F]/90 border border-white/10 flex items-center gap-2">
               <span className="text-slate-400">Gateway:</span>
-              <span className="text-purple-300 font-semibold">Mozilla.ai Otari</span>
+              <span className="text-purple-300 font-semibold">https://otari.ai/api/v1</span>
             </div>
             <div className="px-3 py-1.5 rounded-xl bg-[#0E131F]/90 border border-white/10 flex items-center gap-2">
-              <span className="text-slate-400">Models:</span>
-              <span className="text-cyan-300 font-semibold">Qwen • Llama • Gemma</span>
+              <span className="text-slate-400">Active Model:</span>
+              <span className="text-cyan-300 font-semibold">gpt-oss-120b (Live)</span>
             </div>
             <div className="px-3 py-1.5 rounded-xl bg-[#0E131F]/90 border border-white/10 flex items-center gap-2">
               <span className="text-slate-400">Sandbox:</span>
-              <span className="text-emerald-400 font-semibold">Python MicroVM</span>
+              <span className="text-emerald-400 font-semibold">Python Runtime</span>
             </div>
             <div className="px-3 py-1.5 rounded-xl bg-[#0E131F]/90 border border-white/10 flex items-center gap-2">
               <span className="text-slate-400">Voice:</span>
-              <span className="text-amber-300 font-semibold">ElevenLabs Voice</span>
+              <span className="text-amber-300 font-semibold">ElevenLabs Live Stream</span>
             </div>
           </div>
 
@@ -92,6 +94,7 @@ export default function App() {
             currentScenario={currentScenario}
             setCurrentScenario={setCurrentScenario}
             elevenLabsApiKey={elevenLabsApiKey}
+            otariApiKey={otariApiKey}
             selectedVoice={selectedVoice}
             setSelectedVoice={setSelectedVoice}
           />
